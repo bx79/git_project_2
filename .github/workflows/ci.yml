@@ -1,0 +1,12 @@
+name: project 2 CI
+on: push
+jobs:
+  lint:
+    runs-on: python3
+    steps:
+      - run: pip install -r requirements.txt
+  test:
+    needs: lint
+    runs-on: python3
+    steps:
+      - run: pytest tests/
