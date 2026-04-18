@@ -1,12 +1,54 @@
 name: project 2 CI
 on: push
 jobs:
+
   lint:
-    runs-on: python3
+    runs-on: ubuntu-latest
     steps:
-      - run: pip install -r requirements.txt
+      - uses: actions/checkoutv@4
+      - run: pip install flake8 && flake8
+      
   test:
     needs: lint
-    runs-on: python3
+    runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkoutv@4
+      - run: pip install -r requirements.txt
       - run: pytest tests/
+      
+  python-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-cov
+          pip install -r requirements.txt
+
+      - name: Run tests with coverage
+        run: |
+          pytest \
+            --cov=src \
+            --cov-report=xml \
+            --cov-report=html \
+            --cov-report=term-missing \
+            --cov-fail-under=80
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.xml
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: htmlcov/
