@@ -6,7 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: pip install flake8 && flake8
+      - run: pip install flake8
+      - run: flake8 src/calculator.py
+      - run: flake8 src/validator.py
       
   test:
     needs: lint
