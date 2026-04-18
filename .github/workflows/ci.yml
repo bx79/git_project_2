@@ -5,14 +5,14 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkoutv@4
+      - uses: actions/checkout@v4
       - run: pip install flake8 && flake8
       
   test:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkoutv@4
+      - uses: actions/checkout@v4
       - run: pip install -r requirements.txt
       - run: pytest tests/
       
